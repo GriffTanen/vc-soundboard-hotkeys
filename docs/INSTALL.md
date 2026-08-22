@@ -1,5 +1,8 @@
 # Installation
 
+> A friendlier step-by-step version lives in the [README](../README.md#installation)
+> ([по-русски](../README.ru.md#установка)). This page is the terse reference.
+
 The plugin needs Electron's `globalShortcut`, which only exists in the main
 process. Vencord reaches it through a plugin's `native.ts`, and that file is only
 bundled when Vencord is **built from source**. There is no way to get global
@@ -23,13 +26,14 @@ pnpm install --frozen-lockfile
 
 ```bash
 mkdir -p src/userplugins
-git clone https://github.com/<you>/discord.plugin src/userplugins/soundboardHotkeys-repo
-cp -r src/userplugins/soundboardHotkeys-repo/src/soundboardHotkeys src/userplugins/
+git clone https://github.com/GriffTanen/vc-soundboard-hotkeys src/userplugins/_shk
+mv src/userplugins/_shk/src/soundboardHotkeys src/userplugins/soundboardHotkeys
+rm -rf src/userplugins/_shk
 ```
 
 Or copy `src/soundboardHotkeys/` into `<Vencord>/src/userplugins/` by hand.
 
-The folder must contain `index.tsx`, `native.ts`, `HotkeyRecorder.tsx`, `types.ts`.
+The folder must contain `index.tsx`, `native.ts`, `HotkeyRecorder.tsx`, `i18n.ts`, `types.ts`.
 
 > Do not leave an empty folder in `src/userplugins` — Vencord fails to compile.
 
