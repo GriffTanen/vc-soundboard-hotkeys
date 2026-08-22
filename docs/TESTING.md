@@ -42,12 +42,35 @@ Log what each lookup actually resolved to before moving on.
 | 8 | Disable the plugin, then press the hotkey | Nothing fires; the combination returns to the other app |
 | 9 | Restart Discord | Bindings survive |
 | 10 | Press the same hotkey repeatedly (~5s cooldown) | Failure toast, plugin keeps working |
-| 11 | Remove a binding | Hotkey stops firing immediately |
+| 11 | Remove a binding (trash icon) | Row disappears, hotkey stops firing |
+| 12 | Each row shows emoji, name, key and trash icon on one line | Keys read as `Alt + Num1`, not `Alt+num1` |
+| 13 | An existing binding still fires after the display change | Storage format is unchanged, so old bindings keep working |
+| 14 | "Add a sound" picker lists only unbound sounds | Picking one starts key recording immediately |
+| 15 | Remove every binding | Empty-state card plus the picker are shown |
 
 ## Step 3 — regression
 
 After any fix, run the whole of Step 2 again — a change in the IPC or settings
 layer can break a check that passed earlier.
+
+## Hard-won findings
+
+Both were found by comparing the plugin's traffic against a real button click in a
+live client. Neither is in Discord's documentation.
+
+1. **The REST call alone produces no audio.** Discord's own button does two things:
+   `POST /channels/{id}/send-soundboard-sound` *and* a separate internal dispatch,
+   `GUILD_SOUNDBOARD_SOUND_PLAY_LOCALLY`. The POST broadcasts the emoji and tells the
+   server; the dispatch is what actually makes sound. With only the POST the request
+   returns 204, the emoji appears for everyone, and nobody hears anything.
+   The plugin resolves that function via `findByCodeLazy` - if a Discord update breaks
+   it, this is the first thing to check.
+2. **The emoji fields are required in practice.** `emoji_id` / `emoji_name` are not
+   listed as required, but omitting them also yields a silent 204 with no audio.
+
+Debugging note: 204 from this endpoint means "accepted", not "played". To confirm a
+sound really played, watch for the server echoing `VOICE_CHANNEL_EFFECT_SEND`, and for
+the local `GUILD_SOUNDBOARD_SOUND_PLAY_START` / `_END` pair.
 
 ## Known limits
 

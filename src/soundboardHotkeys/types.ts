@@ -12,6 +12,12 @@ export interface SoundBinding {
     guildId: string | null;
     /** Display name, shown in the settings list. */
     name: string;
+    /**
+     * The sound's emoji. Discord's own client always sends these, and the
+     * sound is silently dropped (204, no audio) when they are missing.
+     */
+    emojiId: string | null;
+    emojiName: string | null;
     /** Electron accelerator, e.g. "Control+Alt+1". */
     accelerator: string;
 }

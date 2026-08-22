@@ -6,6 +6,8 @@
 
 import { Button, React } from "@webpack/common";
 
+import { t } from "./i18n";
+
 /** Keys that only act as modifiers — never a binding on their own. */
 const MODIFIER_CODES = new Set([
     "ControlLeft", "ControlRight",
@@ -54,19 +56,39 @@ export function toAccelerator(event: KeyboardEvent): string | null {
     return parts.join("+");
 }
 
+/** Modifier names Electron uses, mapped to what people actually call them. */
+const DISPLAY_NAMES: Record<string, string> = {
+    Control: "Ctrl",
+    Super: "Win"
+};
+
+/**
+ * Turn a stored accelerator into something readable: "Alt+num1" -> "Alt + Num1".
+ * Display only - the stored value keeps Electron's exact format, which is what
+ * globalShortcut expects.
+ */
+export function formatAccelerator(accelerator: string): string {
+    return accelerator
+        .split("+")
+        .map(part => DISPLAY_NAMES[part] ?? part.charAt(0).toUpperCase() + part.slice(1))
+        .join(" + ");
+}
+
 export interface HotkeyRecorderProps {
     /** Current accelerator, or null when unbound. */
     value: string | null;
     /** Called with the newly recorded accelerator. */
     onChange: (accelerator: string) => void;
+    /** Start in recording mode - used right after a sound is added. */
+    autoFocus?: boolean;
 }
 
 /**
  * Click to record, then press a combination. Escape cancels.
  * Captures at the document level so Discord's own shortcuts do not swallow the keys.
  */
-export function HotkeyRecorder({ value, onChange }: HotkeyRecorderProps) {
-    const [recording, setRecording] = React.useState(false);
+export function HotkeyRecorder({ value, onChange, autoFocus = false }: HotkeyRecorderProps) {
+    const [recording, setRecording] = React.useState(autoFocus);
 
     React.useEffect(() => {
         if (!recording) return;
@@ -97,7 +119,9 @@ export function HotkeyRecorder({ value, onChange }: HotkeyRecorderProps) {
             color={recording ? Button.Colors.BRAND : Button.Colors.PRIMARY}
             onClick={() => setRecording(r => !r)}
         >
-            {recording ? "Press a key… (Esc to cancel)" : value ?? "Not bound"}
+            {recording
+                ? t().pressAKey
+                : value === null ? t().clickToRecord : formatAccelerator(value)}
         </Button>
     );
 }
