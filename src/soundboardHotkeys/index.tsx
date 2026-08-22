@@ -438,7 +438,7 @@ export default definePlugin({
         "minimised or you are in a fullscreen game. / " +
         "Глобальные хоткеи для звуковой панели Discord - работают даже когда Discord " +
         "свёрнут или вы в полноэкранной игре.",
-    authors: [{ name: "griff", id: 0n }],
+    authors: [{ name: "GriffTanen", id: 377062587382366210n }],
     settings,
 
     contextMenus: {
