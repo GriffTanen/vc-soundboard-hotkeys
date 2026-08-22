@@ -1,6 +1,6 @@
 /*
- * Vencord, a Discord client mod
- * Copyright (c) 2026 Vendicated and contributors
+ * SoundboardHotkeys, a Vencord userplugin
+ * Copyright (c) 2026 GriffTanen
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
