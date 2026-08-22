@@ -1,0 +1,22 @@
+{
+  "$schema": "https://venpm.dev/schemas/v1/plugins.json",
+  "name": "vc-soundboard-hotkeys",
+  "description": "Global hotkeys for Discord's native soundboard",
+  "plugins": {
+    "soundboardHotkeys": {
+      "version": "1.0.0",
+      "description": "Global hotkeys for Discord's native soundboard - they fire even while Discord is minimised or you are in a fullscreen game.",
+      "authors": [
+        {
+          "name": "GriffTanen",
+          "id": "377062587382366210"
+        }
+      ],
+      "license": "GPL-3.0-or-later",
+      "source": {
+        "git": "https://github.com/GriffTanen/vc-soundboard-hotkeys.git",
+        "path": "src/soundboardHotkeys"
+      }
+    }
+  }
+}

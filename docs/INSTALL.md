@@ -1,7 +1,19 @@
 # Installation
 
-> A friendlier step-by-step version lives in the [README](../README.md#installation)
-> ([по-русски](../README.ru.md#установка)). This page is the terse reference.
+> The [README](../README.md) has a friendlier walkthrough in Russian and English,
+> including the one-command [venpm](https://venpm.dev) route. This page is the terse
+> reference for the manual build.
+
+## Quickest route: venpm
+
+```bash
+npm install -g @kamaras/venpm
+venpm repo add https://github.com/GriffTanen/vc-soundboard-hotkeys/releases/latest/download/plugins.json --name soundboard-hotkeys
+venpm install soundboardHotkeys
+venpm rebuild
+```
+
+Everything below is the manual equivalent.
 
 The plugin needs Electron's `globalShortcut`, which only exists in the main
 process. Vencord reaches it through a plugin's `native.ts`, and that file is only

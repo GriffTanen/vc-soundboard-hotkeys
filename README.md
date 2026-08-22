@@ -1,17 +1,289 @@
 # SoundboardHotkeys
 
-**English** | [Русский](README.ru.md)
-
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Vencord](https://img.shields.io/badge/Vencord-userplugin-ed4245.svg)](https://vencord.dev)
+[![venpm](https://img.shields.io/badge/venpm-installable-5865f2.svg)](https://venpm.dev)
 
-A [Vencord](https://vencord.dev) userplugin that binds **global hotkeys** to Discord's
-native soundboard.
+Плагин для [Vencord](https://vencord.dev), который назначает **глобальные хоткеи** на
+звуки нативной звуковой панели Discord.
 
-Press `Alt+Num1` without leaving your fullscreen game — the sound plays into the voice
-channel and **everyone hears it**.
+Нажали `Alt+Num1`, не выходя из полноэкранной игры — звук ушёл в голосовой канал, и
+**его слышат все**.
 
-![Plugin settings](docs/img/settings.png)
+![Окно настроек](docs/img/settings.png)
+
+> 🇬🇧 **English** — see the collapsible *English version* section at the bottom of this
+> page. No need to navigate away.
+
+---
+
+## Зачем
+
+Звуковая панель Discord запускается только кликом по кнопке в интерфейсе. В главном
+сценарии — вы в игре, Discord свёрнут — это бесполезно: нужно альт-табнуться. Плагин
+закрывает именно этот разрыв.
+
+## Возможности
+
+- **По-настоящему глобальные хоткеи.** Регистрируются в main-процессе Electron через
+  `globalShortcut`, поэтому срабатывают при свёрнутом Discord и в полноэкранной игре.
+- **Нативная звуковая панель.** Звук идёт через саму soundboard Discord — его слышат все
+  в голосовом канале, а не только вы.
+- **Два способа привязки.** Правый клик по звуку → *Назначить хоткей*, либо выбор из
+  списка с поиском прямо в настройках плагина.
+- **Запись нажатием.** Нажали на кнопку с клавишей, нажали комбинацию. Esc — отмена.
+- **Читаемые клавиши.** Показываются как `Alt + Num1`, а не `Alt+num1`.
+- **Русский и английский.** Язык берётся из настроек Discord автоматически.
+- **Честные ошибки.** Не в голосовом канале, микрофон выключен, кулдаун, комбинация
+  занята другим приложением — о каждом случае плагин сообщает, а не молчит.
+
+## Требования
+
+| | |
+|---|---|
+| Discord | **Десктопное приложение.** В браузере глобальных хоткеев не существует |
+| [Node.js](https://nodejs.org) | 18 или новее |
+| [pnpm](https://pnpm.io) | `npm i -g pnpm` |
+| [Git](https://git-scm.com) | любая свежая версия |
+
+## Установка
+
+Три способа, от простого к сложному.
+
+> **Почему нельзя «просто закинуть один файл»?**
+> Плагины Vencord компилируются вместе с самим клиентом — готового «файла-установщика»
+> в Vencord не существует в принципе. Плюс глобальные хоткеи требуют `globalShortcut`
+> из Electron, а он доступен только через файл `native.ts`, который попадает в сборку
+> лишь когда **Vencord собран из исходников**. Это цена данной функции.
+>
+> *(Формат `apk` — это Android-приложения, к Discord отношения не имеет. Один файл
+> `.plugin.js` — это BetterDiscord, другой клиент-мод.)*
+
+### Способ 1 — venpm (самый простой)
+
+[venpm](https://venpm.dev) — пакетный менеджер плагинов Vencord. Две команды:
+
+```bash
+npm install -g @kamaras/venpm
+
+venpm repo add https://github.com/GriffTanen/vc-soundboard-hotkeys/releases/latest/download/plugins.json --name soundboard-hotkeys
+venpm install soundboardHotkeys
+venpm rebuild
+```
+
+Дальше — перезапустить Discord и включить плагин (шаги 6–7 ниже).
+
+### Способ 2 — архив из Releases (без git)
+
+Скачайте `soundboardHotkeys.zip` со страницы
+[Releases](https://github.com/GriffTanen/vc-soundboard-hotkeys/releases/latest),
+распакуйте папку `soundboardHotkeys` в `<Vencord>/src/userplugins/`, затем выполните
+`pnpm build` и перезапустите Discord.
+
+### Способ 3 — вручную, по шагам
+
+> **Почему нельзя просто «закинуть файл»?**
+> Глобальные хоткеи требуют `globalShortcut` из Electron, а он существует только в
+> main-процессе. Vencord добирается до него через файл `native.ts`, и этот файл
+> **попадает в сборку только если Vencord собран из исходников**. Готовая установка
+> Vencord такого не умеет. Это цена данной функции.
+
+### Шаг 1 — Проверьте инструменты
+
+```bash
+node --version   # v18.0.0 или выше
+pnpm --version   # любая версия
+git --version    # любая версия
+```
+
+Если команда «не найдена» — установите её по ссылке из таблицы выше и заново откройте
+терминал.
+
+### Шаг 2 — Скачайте исходники Vencord
+
+Выберите папку, которую не будете удалять: она понадобится при каждом обновлении.
+
+```bash
+git clone https://github.com/Vendicated/Vencord
+cd Vencord
+pnpm install --frozen-lockfile
+```
+
+Последняя команда скачивает зависимости, это занимает пару минут.
+
+### Шаг 3 — Добавьте плагин
+
+Находясь внутри папки `Vencord`:
+
+```bash
+mkdir -p src/userplugins
+git clone https://github.com/GriffTanen/vc-soundboard-hotkeys src/userplugins/_shk
+mv src/userplugins/_shk/src/soundboardHotkeys src/userplugins/soundboardHotkeys
+rm -rf src/userplugins/_shk
+```
+
+Проверьте — в папке должно быть ровно пять файлов:
+
+```bash
+ls src/userplugins/soundboardHotkeys
+# HotkeyRecorder.tsx  i18n.ts  index.tsx  native.ts  types.ts
+```
+
+> Никогда не оставляйте **пустую** папку внутри `src/userplugins` — сборка Vencord
+> сломается.
+
+### Шаг 4 — Соберите
+
+```bash
+pnpm build
+```
+
+В конце выводится список собранных файлов. Ошибка на этом шаге означает, что шаг 3
+выполнен неверно.
+
+### Шаг 5 — Установите в Discord
+
+```bash
+pnpm inject
+```
+
+Выберите вашу установку Discord, когда спросят.
+
+### Шаг 6 — Полностью перезапустите Discord
+
+Закрыть окно **недостаточно** — Discord продолжает работать в трее.
+Правый клик по значку в трее → *Выйти из Discord*, затем запустите заново.
+
+### Шаг 7 — Включите плагин
+
+**Настройки пользователя → Vencord → Plugins → SoundboardHotkeys** → включите.
+
+Если плагина нет в списке — шаг 4 или 5 не завершился, повторите их.
+
+## Использование
+
+### Назначить хоткей
+
+Двумя способами, как удобнее:
+
+- **Из окна настроек** — откройте шестерёнку плагина, выберите звук в поле
+  *Выберите звук…* и нажмите нужную комбинацию.
+- **Из звуковой панели** — правый клик по любому звуку → **Назначить хоткей**, затем
+  нажмите комбинацию.
+
+![Назначить хоткей через контекстное меню звука](docs/img/context-menu.png)
+
+### Проиграть
+
+Зайдите в голосовой канал и нажмите клавишу. Работает при свёрнутом Discord и в
+полноэкранной игре — ради этого всё и делалось.
+
+### Как выбирать комбинации
+
+Пока Discord запущен, зарегистрированная комбинация **перехватывается на уровне
+системы** — другие приложения её не получат. Берите редкие сочетания вроде `Alt+Num1` и
+избегайте того, что уже занято игрой или системой.
+
+По умолчанию не назначено ничего — намеренно.
+
+## Обновление
+
+Из папки `Vencord`:
+
+```bash
+cd src/userplugins/soundboardHotkeys
+git pull            # только если оставляли папку как git-клон
+cd ../../..
+pnpm build
+```
+
+После этого перезапустите Discord.
+
+## Удаление
+
+```bash
+rm -rf src/userplugins/soundboardHotkeys
+pnpm build
+```
+
+Чтобы убрать Vencord целиком — `pnpm uninject`.
+
+## Что делать, если не работает
+
+| Симптом | Причина |
+|---|---|
+| Плагина нет в списке | Сборка или inject не завершились — повторите шаги 4–6 |
+| Хоткей не срабатывает | Комбинация занята другим приложением; плагин сообщает об этом уведомлением. Возьмите другую |
+| Уведомление «Зайдите в голосовой канал» | Звуковая панель работает только внутри голосового канала |
+| Ничего не происходит при выключенном микрофоне | Discord блокирует soundboard при mute и deaf |
+| Работает в окне, но не в свёрнутом виде | Vencord собран не из исходников — см. врезку перед шагом 1 |
+
+## Ограничения
+
+Правила Discord, а не плагина:
+
+- Нужно находиться в голосовом канале и не быть в mute/deaf/suppress.
+- Требуются права `SPEAK` + `USE_SOUNDBOARD` (и `USE_EXTERNAL_SOUNDS` для звуков с
+  другого сервера).
+- Кулдаун между звуками — примерно 5 секунд.
+
+Особенности самого плагина:
+
+- Нажатия опрашиваются каждые 100 мс, потому что Vencord не даёт плагинам получать
+  push-события IPC. Задержка — до ~100 мс.
+- Только десктоп.
+
+## Как это устроено
+
+Два процесса Electron, потому что ни одна половина не может выполнить задачу целиком:
+
+- **[`native.ts`](src/soundboardHotkeys/native.ts)** (main-процесс) — единственное место,
+  где существует `globalShortcut`. Регистрирует комбинации и копит нажатия в очереди.
+- **[`index.tsx`](src/soundboardHotkeys/index.tsx)** (renderer) — единственное место, где
+  доступны сторы Discord и REST-клиент. Сопоставляет комбинацию со звуком и проигрывает.
+
+Renderer забирает очередь main-процесса по таймеру, потому что Vencord предоставляет
+плагинам только invoke-style запрос/ответ — у main нет канала, чтобы отправить событие в
+renderer.
+
+### Проигрывание звука — это два вызова, а не один
+
+Полезно знать, если делаете что-то похожее: этого нет ни в какой документации. Кнопка
+звуковой панели Discord делает **два** действия:
+
+1. `POST /channels/{id}/send-soundboard-sound` — рассылает эмодзи и сообщает серверу;
+2. внутренний диспатч `GUILD_SOUNDBOARD_SOUND_PLAY_LOCALLY` — **именно он производит
+   звук**.
+
+Если сделать только POST, запрос вернёт `204`, эмодзи увидят все, а звука не услышит
+никто. Поля `emoji_id` / `emoji_name` формально необязательны, но без них происходит
+ровно то же самое.
+
+`204` от этого эндпоинта означает «принято», а не «проиграно».
+
+## Разработка
+
+```bash
+npx tsc --noEmit -p tsconfig.json
+pnpm build
+```
+
+Тестирование только ручное — см. [docs/TESTING.md](docs/TESTING.md). Автотесты здесь
+бессмысленны: все задействованные API существуют только внутри запущенного клиента
+Discord.
+
+Вклад приветствуется — см. [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Лицензия
+
+[GPL-3.0-or-later](LICENSE), как у Vencord.
+
+---
+
+<details>
+<summary><b>🇬🇧 English version</b> — click to expand</summary>
+
+<br>
 
 ## Why
 
@@ -44,11 +316,39 @@ button. This plugin closes that gap.
 
 ## Installation
 
-> **Why is this not just "drop in a file"?**
-> Global hotkeys need Electron's `globalShortcut`, which only exists in the main process.
-> Vencord reaches it through a plugin's `native.ts`, and that file is **only bundled when
-> Vencord is built from source**. A prebuilt Vencord install cannot provide this. That is
-> the price of the feature.
+Three ways, easiest first.
+
+> **Why is there no "just drop in one file"?**
+> Vencord plugins are compiled together with the client — a standalone installer file
+> does not exist in Vencord at all. On top of that, global hotkeys need Electron's
+> `globalShortcut`, reachable only through a `native.ts` file, which is bundled **only
+> when Vencord is built from source**. That is the price of the feature.
+>
+> *(`apk` is an Android package format, unrelated to Discord. A single `.plugin.js` file
+> is BetterDiscord — a different client mod.)*
+
+### Option 1 — venpm (easiest)
+
+[venpm](https://venpm.dev) is a package manager for Vencord plugins. Two commands:
+
+```bash
+npm install -g @kamaras/venpm
+
+venpm repo add https://github.com/GriffTanen/vc-soundboard-hotkeys/releases/latest/download/plugins.json --name soundboard-hotkeys
+venpm install soundboardHotkeys
+venpm rebuild
+```
+
+Then restart Discord and enable the plugin (Steps 6–7 below).
+
+### Option 2 — release archive (no git)
+
+Download `soundboardHotkeys.zip` from
+[Releases](https://github.com/GriffTanen/vc-soundboard-hotkeys/releases/latest), unpack
+the `soundboardHotkeys` folder into `<Vencord>/src/userplugins/`, then run `pnpm build`
+and restart Discord.
+
+### Option 3 — manual, step by step
 
 ### Step 1 — Check your tools
 
@@ -236,3 +536,5 @@ Contributions welcome — see [CONTRIBUTING.md](CONTRIBUTING.md).
 ## License
 
 [GPL-3.0-or-later](LICENSE), matching Vencord.
+
+</details>

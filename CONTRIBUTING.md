@@ -45,6 +45,18 @@ running Electron client.
   expects (`Alt+num1`) and only prettified for display. Changing the stored format
   breaks every existing binding.
 
+## Releasing
+
+The plugin version lives in `plugins.json`, which is what
+[venpm](https://venpm.dev) reads. Bump it there, then push a matching tag:
+
+```bash
+git tag v1.1.0 && git push origin v1.1.0
+```
+
+CI refuses to publish when the tag and the manifest disagree, then attaches the plugin
+zip and `plugins.json` to the release.
+
 ## Style
 
 Match the surrounding code: TypeScript strict, no `any`, imports at the top, and
