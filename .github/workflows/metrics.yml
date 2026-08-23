@@ -19,20 +19,29 @@ jobs:
 
       - name: Collect and append
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Traffic endpoints need admin rights, which GITHUB_TOKEN cannot be granted.
+          # Set a METRICS_TOKEN secret (a PAT with repo scope) to record them; without
+          # it the run still logs stars and forks rather than failing.
+          GH_TOKEN: ${{ secrets.METRICS_TOKEN || secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
 
           stars=$(gh api "repos/$REPO" --jq '.stargazers_count')
           forks=$(gh api "repos/$REPO" --jq '.forks_count')
-          views=$(gh api "repos/$REPO/traffic/views" --jq '.count')
-          uniques=$(gh api "repos/$REPO/traffic/views" --jq '.uniques')
-          clones=$(gh api "repos/$REPO/traffic/clones" --jq '.count')
 
-          # Referrers are the point of the whole exercise: they say which post worked.
-          referrers=$(gh api "repos/$REPO/traffic/popular/referrers" \
-            --jq 'if length == 0 then "—" else [.[] | "\(.referrer) (\(.uniques))"] | join(", ") end')
+          # n/a means "not measured", which is not the same as zero.
+          views="n/a"; uniques="n/a"; clones="n/a"; referrers="n/a"
+          if traffic=$(gh api "repos/$REPO/traffic/views" 2>/dev/null); then
+            views=$(echo "$traffic" | jq -r '.count')
+            uniques=$(echo "$traffic" | jq -r '.uniques')
+            clones=$(gh api "repos/$REPO/traffic/clones" --jq '.count')
+            # Referrers are the point of the exercise: they say which post worked.
+            referrers=$(gh api "repos/$REPO/traffic/popular/referrers" \
+              --jq 'if length == 0 then "—" else [.[] | "\(.referrer) (\(.uniques))"] | join(", ") end')
+          else
+            echo "::warning::Traffic unavailable - add a METRICS_TOKEN secret to record it."
+          fi
 
           if [ ! -f docs/METRICS.md ]; then
             mkdir -p docs

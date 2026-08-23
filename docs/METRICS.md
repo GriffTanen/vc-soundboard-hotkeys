@@ -7,6 +7,11 @@ long-term record.
 **Views/clones are 14-day totals**, not weekly deltas — compare stars and referrers
 across rows to see what a post actually did.
 
+`n/a` means the traffic columns were not measured, which is not the same as zero.
+GitHub's traffic API needs admin rights that the built-in `GITHUB_TOKEN` cannot be
+given, so those columns are only filled once a `METRICS_TOKEN` secret exists (a personal
+access token with `repo` scope). Stars and forks are recorded either way.
+
 | Date | Stars | Forks | Views (14d) | Uniques | Clones | Referrers |
 |---|---|---|---|---|---|---|
 | 2026-08-23 | 0 | 0 | 0 | 0 | 0 | — |
