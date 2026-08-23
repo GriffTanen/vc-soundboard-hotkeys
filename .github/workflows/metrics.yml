@@ -1,0 +1,67 @@
+name: Metrics
+
+# GitHub's traffic API only keeps 14 days. Without this, the history of which
+# post brought which visitors is lost for good.
+on:
+  schedule:
+    # Mondays, 06:00 UTC.
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Collect and append
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          stars=$(gh api "repos/$REPO" --jq '.stargazers_count')
+          forks=$(gh api "repos/$REPO" --jq '.forks_count')
+          views=$(gh api "repos/$REPO/traffic/views" --jq '.count')
+          uniques=$(gh api "repos/$REPO/traffic/views" --jq '.uniques')
+          clones=$(gh api "repos/$REPO/traffic/clones" --jq '.count')
+
+          # Referrers are the point of the whole exercise: they say which post worked.
+          referrers=$(gh api "repos/$REPO/traffic/popular/referrers" \
+            --jq 'if length == 0 then "—" else [.[] | "\(.referrer) (\(.uniques))"] | join(", ") end')
+
+          if [ ! -f docs/METRICS.md ]; then
+            mkdir -p docs
+            cat > docs/METRICS.md <<'HEADER'
+          # Traffic log
+
+          Collected automatically every Monday by `.github/workflows/metrics.yml`.
+          GitHub's traffic API only exposes a rolling 14-day window, so this file is
+          the only long-term record.
+
+          **Views/clones are 14-day totals**, not weekly deltas — compare stars and
+          referrers across rows to see what a post actually did.
+
+          | Date | Stars | Forks | Views (14d) | Uniques | Clones | Referrers |
+          |---|---|---|---|---|---|---|
+          HEADER
+          fi
+
+          echo "| $(date -u +%Y-%m-%d) | $stars | $forks | $views | $uniques | $clones | $referrers |" >> docs/METRICS.md
+
+      - name: Commit if changed
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- docs/METRICS.md; then
+            echo "No change."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/METRICS.md
+          git commit -m "Record weekly traffic"
+          git push

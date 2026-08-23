@@ -1,0 +1,39 @@
+name: Issue auto-reply
+
+# Answers within a minute so a report is not stalled waiting for the maintainer
+# to be online, and asks up front for the details most reports are missing.
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+
+jobs:
+  reply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post the first reply
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$NUMBER" --repo "$REPO" --body "$(cat <<'BODY'
+          Thanks for opening this — it will be read.
+
+          This is a one-person, unpaid project, so a reply may take a few days. In the
+          meantime, if this is a bug, these four things are what makes it fixable:
+
+          1. **Discord** — Stable, PTB, Canary, or Vesktop?
+          2. **Vencord** — built from source, or a prebuilt install? Global hotkeys only
+             work in a source build; see the [install guide](../blob/main/docs/INSTALL.md).
+          3. **The hotkey** — which combination, and does another app already use it?
+          4. **Console output** — `Ctrl+Shift+I` → Console tab, and anything mentioning
+             `SoundboardHotkeys`.
+
+          The [testing checklist](../blob/main/docs/TESTING.md) covers the usual causes,
+          including the two that account for most reports: not being in a voice channel,
+          and being muted or deafened.
+          BODY
+          )"

@@ -25,6 +25,9 @@ jobs:
             exit 1
           fi
 
+      - name: Validate the venpm manifest
+        run: npx --yes @kamaras/venpm validate plugins.json --strict
+
       - name: Package the plugin folder
         run: |
           # venpm copies this folder into src/userplugins, so the zip mirrors it exactly.
@@ -38,3 +41,18 @@ jobs:
             soundboardHotkeys.zip
             plugins.json
           generate_release_notes: true
+          append_body: true
+          body: |
+            ## Install
+
+            With [venpm](https://venpm.dev), from a Vencord source checkout:
+
+            ```sh
+            venpm repo add soundboard-hotkeys https://github.com/${{ github.repository }}/releases/latest/download/plugins.json
+            venpm install soundboardHotkeys
+            ```
+
+            Or unpack `soundboardHotkeys.zip` into `src/userplugins/` and rebuild.
+
+            Global hotkeys need **Vencord built from source** — a prebuilt install does
+            not bundle `native.ts`. Full steps: [INSTALL.md](https://github.com/${{ github.repository }}/blob/main/docs/INSTALL.md)

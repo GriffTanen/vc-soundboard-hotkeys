@@ -15,6 +15,10 @@
 > 🇬🇧 **English** — see the collapsible *English version* section at the bottom of this
 > page. No need to navigate away.
 
+> 🔍 Делаете что-то похожее? [Почему одного POST недостаточно, чтобы звук
+> проигрался](#проигрывание-звука-это-два-вызова-а-не-один) — этого нет ни в какой
+> документации Discord.
+
 ---
 
 ## Зачем
@@ -284,6 +288,10 @@ Discord.
 <summary><b>🇬🇧 English version</b> — click to expand</summary>
 
 <br>
+
+> 🔍 Building something similar? [Why a POST alone does not play
+> anything](#playing-a-sound-takes-two-calls-not-one) — this is documented nowhere in
+> Discord's API.
 
 ## Why
 

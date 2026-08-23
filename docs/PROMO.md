@@ -1,4 +1,4 @@
-# Where to share this plugin
+# Getting this plugin in front of people
 
 Notes for the maintainer. Not part of the user documentation.
 
@@ -14,12 +14,41 @@ This plugin was written with an AI assistant, so opening a PR there risks a perm
 block on the account. Two consequences:
 
 1. No PR to `Vendicated/Vencord`.
-2. **In Vencord's own Discord server, write in your own words.** The drafts below are
-   raw material to rewrite, not text to paste there. Reddit and unrelated servers have no
+2. **In Vencord's own Discord server, write in your own words.** The drafts below are raw
+   material to rewrite, not text to paste there. Reddit and unrelated servers have no
    such rule.
 
-Also worth knowing: a comparable plugin, **KeybindMute** (PR #3333), was rejected in
-April 2025 as "very niche". Even without the AI rule, acceptance was unlikely.
+Also worth knowing: a comparable plugin, **KeybindMute** (PR #3333), was rejected in April
+2025 as "very niche". Even without the AI rule, acceptance was unlikely.
+
+## What is automated, and what is not
+
+Automated (nothing to do):
+
+- **Releases** — push a tag, CI validates the manifest, builds the zip, writes install
+  instructions into the release notes.
+- **Traffic log** — `docs/METRICS.md` gets a row every Monday. Referrers show which post
+  actually brought people. GitHub only keeps 14 days, so this file is the only history.
+- **First reply to issues** — posted within a minute, asks for the details most reports
+  omit.
+
+**Not automatable, by design.** Automating a Discord *user* account is a
+[ToS violation with a permanent ban](https://support.discord.com/hc/en-us/articles/115002192352-Automated-User-Accounts-Self-Bots),
+and it would be the same account you play on. Reddit bans bot self-promotion. Every
+channel with real volume is deliberately human-gated. Posting is a one-time manual job of
+about twenty minutes.
+
+## Reality check
+
+- **Nothing brings visitors on its own.** As of 23 Aug 2026 the repo had 0 views, 0
+  clones, 0 referrers. GitHub topic pages sort by stars — at zero stars we appear on no
+  page of results. The first inbound link has to be placed by a person.
+- **venpm does not bring anyone.** `venpm search` only searches repositories the user
+  already added (`config.repos` in its source). There is no central index. It shortens
+  *installation* for people who already found us; it is not a discovery channel.
+- **Realistic ceiling: 10–30 stars.** Legitimate utility plugins in the `vencord-plugin`
+  topic sit there (FakeDeafen 29, base64-decoder 20, messageScheduler 16). The 70–117 star
+  repos are nitro snipers — a different, larger, and less scrupulous audience.
 
 ## What we have going for us
 
@@ -29,25 +58,33 @@ April 2025 as "very niche". Even without the AI rule, acceptance was unlikely.
   (Keybind API, open since 2023), Vesktop issue
   [#18](https://github.com/Vencord/Vesktop/issues/18) (Custom Keybinds), and closed PR
   [#3614](https://github.com/Vendicated/Vencord/pull/3614). People have asked for years.
-- **Realistic ceiling.** Popular userplugin repos sit at 16–117 stars. Not thousands.
 
 ## Where to post, best first
 
 | # | Place | What to do | Expect |
 |---|---|---|---|
-| 1 | **Vencord Discord** (~148k members), userplugin channels | Show it, in your own words. Read the channel rules first | Most of your first users |
-| 2 | **Issue #655**, **Vesktop #18** | One comment: you built this as a userplugin, here is the link | The people who literally asked for it |
-| 3 | **venpm** | Already supported. Put the install command in every post | Drops setup to two commands |
-| 4 | **r/discordapp** and similar | Post with the GIF. Check each subreddit's self-promotion rule | One-off spike |
-| 5 | [`ScattrdBlade/pluginRepo`](https://github.com/ScattrdBlade/pluginRepo) | Ask to be listed — it is a plugin browser inside Discord | Small but on-target |
-| 6 | Russian-speaking Discord/Telegram modding communities | Post in Russian | Less crowded niche |
+| 1 | Issue [#655](https://github.com/Vendicated/Vencord/issues/655), Vesktop [#18](https://github.com/Vencord/Vesktop/issues/18) | One comment: you built this as a userplugin | The people who literally asked for it |
+| 2 | **Vencord Discord**, userplugin channels | Post in your own words; read the channel rules first | Most of your first users |
+| 3 | **r/discordapp** and similar | Post; check the subreddit's self-promotion rule first — many require a weekly megathread | One-off spike |
+| 4 | Russian-speaking Discord/Telegram modding communities | Post in Russian | Less crowded niche |
 
-Do not post the same text everywhere on the same day. Space it out, and answer whatever
-comes back — the first questions tell you what the README failed to explain.
+Do not post everywhere on the same day. Space it out, check `docs/METRICS.md` a week
+later, and put further effort only into whatever actually showed up in referrers.
+
+Answer whatever comes back — the first questions tell you what the README failed to
+explain.
 
 ## Drafts
 
-Rewrite before posting, especially for #1.
+Rewrite before posting, especially for #1 and #2.
+
+### Comment for an issue thread (English)
+
+> For anyone still looking for this: I built it as a Vencord userplugin — global hotkeys
+> for the native soundboard, registered through `globalShortcut` in `native.ts`, so they
+> fire while Discord is minimised or a game has focus.
+>
+> https://github.com/GriffTanen/vc-soundboard-hotkeys
 
 ### Short, for a Discord channel (English)
 
@@ -55,8 +92,7 @@ Rewrite before posting, especially for #1.
 > I made a Vencord userplugin that binds global hotkeys to it — press the key in a
 > fullscreen game and the sound plays into the voice channel for everyone.
 >
-> Needs Vencord built from source (global hotkeys need `native.ts`). With venpm it's:
-> `venpm install soundboardHotkeys`
+> Needs Vencord built from source (global hotkeys need `native.ts`).
 >
 > https://github.com/GriffTanen/vc-soundboard-hotkeys
 
@@ -67,7 +103,6 @@ Rewrite before posting, especially for #1.
 > полноэкранной игре, звук уходит в голосовой канал и его слышат все.
 >
 > Нужен Vencord, собранный из исходников (глобальные хоткеи требуют `native.ts`).
-> Через venpm — одна команда: `venpm install soundboardHotkeys`
 >
 > https://github.com/GriffTanen/vc-soundboard-hotkeys
 
@@ -80,27 +115,24 @@ Rewrite before posting, especially for #1.
 > defeats the point.
 >
 > So the plugin registers the hotkeys in Electron's main process. Press the key while a
-> fullscreen game has focus and the sound plays into the voice channel; everyone hears
-> it, not just you.
+> fullscreen game has focus and the sound plays into the voice channel; everyone hears it,
+> not just you.
 >
 > Bind by right-clicking a sound, or from a searchable list in the settings. English and
 > Russian, following your Discord language.
 >
-> The catch: it needs Vencord built from source, because global hotkeys are only
-> reachable from a plugin's `native.ts`, which prebuilt installs do not bundle.
+> The catch: it needs Vencord built from source, because global hotkeys are only reachable
+> from a plugin's `native.ts`, which prebuilt installs do not bundle.
 >
 > One thing I learned that is documented nowhere: the REST endpoint alone does not play
-> anything. Discord's own button also fires an internal `GUILD_SOUNDBOARD_SOUND_PLAY_LOCALLY`
-> dispatch, and that is what makes sound. With only the POST you get a 204, the emoji
-> shows up for everyone, and there is silence.
+> anything. Discord's own button also fires an internal
+> `GUILD_SOUNDBOARD_SOUND_PLAY_LOCALLY` dispatch, and that is what makes sound. With only
+> the POST you get a 204, the emoji shows up for everyone, and there is silence.
 >
 > https://github.com/GriffTanen/vc-soundboard-hotkeys
 
-### One-liner, for a relevant issue thread
-
-> For anyone still looking for this: I built it as a Vencord userplugin — global hotkeys
-> for the native soundboard, via `globalShortcut` in `native.ts`.
-> https://github.com/GriffTanen/vc-soundboard-hotkeys
+The `PLAY_LOCALLY` detail is the strongest thing we have for a developer audience — it is
+knowledge that exists nowhere else, and it is a reason for someone to link the repo.
 
 ## Claims to keep straight
 
