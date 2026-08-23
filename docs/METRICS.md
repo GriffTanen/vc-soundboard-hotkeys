@@ -12,10 +12,11 @@ GitHub's traffic API needs admin rights that the built-in `GITHUB_TOKEN` cannot 
 given, so those columns are only filled once a `METRICS_TOKEN` secret exists (a personal
 access token with `repo` scope). Stars and forks are recorded either way.
 
+The first row is the baseline: the repository had never been visited. Anything above zero
+in a later row came from somewhere — the referrer column says where.
+
+New rows are appended to the end of this file, so the table must stay last.
+
 | Date | Stars | Forks | Views (14d) | Uniques | Clones | Referrers |
 |---|---|---|---|---|---|---|
 | 2026-08-23 | 0 | 0 | 0 | 0 | 0 | — |
-
-The first row is the baseline: the repository had never been visited. Anything above zero
-in later rows came from somewhere — the referrer column says where.
-| 2026-08-23 | 0 | 0 | n/a | n/a | n/a | n/a |

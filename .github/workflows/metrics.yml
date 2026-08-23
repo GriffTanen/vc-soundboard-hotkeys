@@ -55,6 +55,8 @@ jobs:
           **Views/clones are 14-day totals**, not weekly deltas — compare stars and
           referrers across rows to see what a post actually did.
 
+          New rows are appended to the end of this file, so the table must stay last.
+
           | Date | Stars | Forks | Views (14d) | Uniques | Clones | Referrers |
           |---|---|---|---|---|---|---|
           HEADER
