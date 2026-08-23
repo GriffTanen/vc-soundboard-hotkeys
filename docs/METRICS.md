@@ -18,3 +18,4 @@ access token with `repo` scope). Stars and forks are recorded either way.
 
 The first row is the baseline: the repository had never been visited. Anything above zero
 in later rows came from somewhere — the referrer column says where.
+| 2026-08-23 | 0 | 0 | n/a | n/a | n/a | n/a |
