@@ -20,4 +20,3 @@ New rows are appended to the end of this file, so the table must stay last.
 | Date | Stars | Forks | Views (14d) | Uniques | Clones | Referrers |
 |---|---|---|---|---|---|---|
 | 2026-08-23 | 0 | 0 | 0 | 0 | 0 | — |
-| 2026-08-23 | 0 | 0 | n/a | n/a | n/a | n/a |
