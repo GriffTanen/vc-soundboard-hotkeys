@@ -21,3 +21,4 @@ New rows are appended to the end of this file, so the table must stay last.
 |---|---|---|---|---|---|---|
 | 2026-08-23 | 0 | 0 | 0 | 0 | 0 | — |
 | 2026-08-24 | 0 | 0 | n/a | n/a | n/a | n/a |
+| 2026-08-31 | 0 | 0 | n/a | n/a | n/a | n/a |
