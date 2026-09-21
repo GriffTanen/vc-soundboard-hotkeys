@@ -84,6 +84,25 @@ No hotkeys are bound by default, precisely for this reason.
 
 Re-copy the plugin folder, then `pnpm build` and restart Discord.
 
+## Troubleshooting
+
+**The plugin — and all of Vencord — silently disappeared from Discord settings.**
+
+Discord's updater installs each new version into a fresh `app-<version>` folder and
+does not carry the Vencord injection over, so an update quietly leaves you on a
+vanilla client. Vencord repatches itself on quit, but only when it was injected as
+an asar, and only if Discord exits normally.
+
+Check the newest `app-*` folder for the injection — on Windows,
+`%LOCALAPPDATA%\Discord\app-<version>\resources\`. An asar install keeps Discord's
+original as `_app.asar` and replaces `app.asar` with a small loader pointing at your
+`patcher.js`; a folder install uses an `app\` folder instead. Note that `_app.asar`
+alone proves nothing: if the loader is gone, Discord starts vanilla.
+
+To fix it: fully quit Discord (from the tray — closing the window is not enough),
+run `pnpm inject` in your Vencord directory, and start Discord again. Your bindings
+are stored separately and survive this.
+
 ## Uninstalling
 
 Remove the folder from `src/userplugins`, run `pnpm build`, and restart Discord.
