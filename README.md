@@ -217,6 +217,7 @@ pnpm build
 | Симптом | Причина |
 |---|---|
 | Плагина нет в списке | Сборка или inject не завершились — повторите шаги 4–6 |
+| Плагин пропал после обновления Discord | Обновление сносит инжект Vencord — выйдите из Discord через трей и выполните `pnpm inject`, см. [docs/INSTALL.md](docs/INSTALL.md#troubleshooting) |
 | Хоткей не срабатывает | Комбинация занята другим приложением; плагин сообщает об этом уведомлением. Возьмите другую |
 | Уведомление «Зайдите в голосовой канал» | Звуковая панель работает только внутри голосового канала |
 | Ничего не происходит при выключенном микрофоне | Discord блокирует soundboard при mute и deaf |
@@ -480,6 +481,7 @@ To remove Vencord entirely, run `pnpm uninject`.
 | Symptom | Cause |
 |---|---|
 | Plugin missing from the list | Build or inject did not finish — redo Steps 4–6 |
+| Plugin vanished after a Discord update | The update drops the Vencord injection — quit Discord from the tray and run `pnpm inject`, see [docs/INSTALL.md](docs/INSTALL.md#troubleshooting) |
 | Hotkey does nothing | Combination is taken by another app; the plugin says so in a toast. Pick another |
 | "Join a voice channel" toast | Soundboard only works inside a voice channel |
 | Nothing happens while muted | Discord blocks the soundboard when muted or deafened |
